@@ -3,7 +3,7 @@ import java.util.*;
 import java.util.Stack;
 import java.lang.*;
 
-
+import java.lang.Math;;
 
 
 class ReversePolishNotationCalculator{
@@ -70,10 +70,12 @@ class ReversePolishNotationCalculator{
         for(int i = 0; i<infixExp.length();i++){
             char c = infixExp.charAt(i);
             
-            if((i==0 && c == '-') ||(i > 0 && c == '-' && infixExp.charAt(i-1) == '(')){
+            if((i==0 && c == '-') || (i > 0 && c == '-' && infixExp.charAt(i-1) == '(') || (i!=0 && i<infixExp.length()-1 && c == '-' && infixExp.charAt(i+1) == '-')){
                 System.out.println("Invalid Mathematical Expression");
-                takeInputs(infixQ, opStack, postFixQ, evalStack);
-                System.exit(0);
+                while(true){
+                    takeInputs(infixQ, opStack, postFixQ, evalStack);
+                }
+                //System.exit(0);
             }
             else if(Character.isDigit(c) || c == '.'){//infixExp.charAt(i) != '+' || infixExp.charAt(i) != '-' || infixExp.charAt(i) != '*' || infixExp.charAt(i) != '/' || infixExp.charAt(i) != '(' || infixExp.charAt(i) != ')'){
                     //char cc = infixExp.charAt(i);
@@ -91,8 +93,9 @@ class ReversePolishNotationCalculator{
                 }
                 else if(decimalCounter>1 && c =='.'){
                     System.out.println("Invalid Mathematical Expression");
-                    takeInputs(infixQ, opStack, postFixQ, evalStack);
-                    System.exit(0);
+                    while(true){
+                        takeInputs(infixQ, opStack, postFixQ, evalStack);
+                    }
                 }
                 else{
                     temp +=c;
@@ -118,18 +121,59 @@ class ReversePolishNotationCalculator{
                     String s = Character.toString(c);
                     infixQ.offer(s);
                 }
+                else if(i>0 && (c =='p' || c == 'P') && Character.isDigit(infixExp.charAt(i-1))){
+                    if(infixExp.charAt(i+1) == 'o' || infixExp.charAt(i+1) == 'O'){
+                        if(infixExp.charAt(i+2) == 'w' || infixExp.charAt(i+2) == 'W'){
+                            infixQ.offer("^");
+                            i = i+2;
+                        }
+                        else{
+                            System.out.println("Invalid Mathematical Expression");
+                            while(true){
+                                takeInputs(infixQ, opStack, postFixQ, evalStack);
+                            }
+                        }
+                    }
+                    else{
+                        System.out.println("Invalid Mathematical Expression");
+                        while(true){
+                            takeInputs(infixQ, opStack, postFixQ, evalStack);
+                        }
+                    }
+                }
                 else{
-                    System.out.print("Invalid Mathematical Expression");
-                    takeInputs(infixQ, opStack, postFixQ, evalStack);
-                    System.exit(0);
+                    System.out.println("Invalid Mathematical Expression");
+                    while(true){
+                        takeInputs(infixQ, opStack, postFixQ, evalStack);
+                    }
                 }
             }
         }
     
     
-        System.out.println(infixQ);
+        //System.out.println(infixQ);
+        String outInfix ="";
+        for(int infix =0; infix<infixQ.size();infix++){
+            String teeemp = infixQ.peek();
+            outInfix += infixQ.peek();
+            outInfix += " ";
+            infixQ.remove();
+            infixQ.offer(teeemp);
+        }
+        System.out.println("The Infix Expression: " + outInfix);
+
         infixToPostfix(infixQ,opStack,postFixQ);
-        System.out.println(postFixQ);
+        String outPostfixValue = "";
+        for(int outPostfix = 0; outPostfix<postFixQ.size(); outPostfix++){
+            String teeemp2 = postFixQ.peek();
+            outPostfixValue += postFixQ.peek();
+            outPostfixValue += " ";
+            postFixQ.remove();
+            postFixQ.offer(teeemp2);
+        }
+        System.out.println("The PostFix Expression: " + outPostfixValue);
+
+        //System.out.println(postFixQ);
         calculate(postFixQ, evalStack);
         double value = evalStack.peek();
         System.out.printf("The result is: %.2f \n", value); //https://stackoverflow.com/questions/2808535/round-a-double-to-2-decimal-places
@@ -208,14 +252,14 @@ class ReversePolishNotationCalculator{
     public void calculate(Queue <String> postFixQ, Stack<Double> evalStack){
         String c;
         Double topNum, nextNum;
-        Double answer =0.0;
+        double answer =0.0;
 
         while(!postFixQ.isEmpty()){
             c = postFixQ.peek();
             postFixQ.remove();
             boolean numeric = true;
             try {                                       //https://www.programiz.com/java-programming/examples/check-string-numeric
-                Double num = Double.parseDouble(c);
+                double num = Double.parseDouble(c);
             } catch (NumberFormatException e) {
                 numeric = false;
             }
@@ -223,16 +267,17 @@ class ReversePolishNotationCalculator{
                 evalStack.push(Double.parseDouble(c));
             }
             else{
+                
                 topNum = evalStack.peek();
                 evalStack.pop();
                 nextNum = evalStack.peek();
                 evalStack.pop();
-
                 switch(c.charAt(0)){
                     case '+': answer = nextNum + topNum; break;
                     case '-': answer = nextNum - topNum; break;
                     case '*': answer = nextNum * topNum; break;
                     case '/': answer = nextNum / topNum; break;
+                    case '^': answer = Math.pow(nextNum, topNum); break;
                 }
                 evalStack.push(answer);
 
