@@ -53,6 +53,7 @@ class ReversePolishNotationCalculator{
         String[] infixExpArr = sc.nextLine().split(" ");
         String infixExp ="";
         int decimalCounter=0;
+        int counterOperator = 0;
         for(int x=0; x<infixExpArr.length; x++){
             infixExp +=infixExpArr[x];
         }
@@ -70,7 +71,7 @@ class ReversePolishNotationCalculator{
         for(int i = 0; i<infixExp.length();i++){
             char c = infixExp.charAt(i);
             
-            if((i==0 && c == '-') || (i > 0 && c == '-' && infixExp.charAt(i-1) == '(') || (i!=0 && i<infixExp.length()-1 && c == '-' && infixExp.charAt(i+1) == '-')){
+            if((i==0 && c == '-') || (i > 0 && c == '-' && infixExp.charAt(i-1) == '(') || (i!=0 && i<infixExp.length()-1 && c == '-' && !Character.isDigit(infixExp.charAt(i+1)) && !Character.isDigit(infixExp.charAt(i-1)))){
                 System.out.println("Invalid Mathematical Expression");
                 while(true){
                     takeInputs(infixQ, opStack, postFixQ, evalStack);
@@ -99,9 +100,11 @@ class ReversePolishNotationCalculator{
                 }
                 else{
                     temp +=c;
+                    counterOperator = 0;
                     if(i==infixExp.length()-1){
                         infixQ.offer(temp);
                         temp = "";
+                        
                     }
                 
                 }
@@ -117,7 +120,8 @@ class ReversePolishNotationCalculator{
                     temp = "";
                 }
                 //System.out.print("hi");
-                if(c=='+' || c=='-' || c=='*' || c=='/' || c =='(' || c == ')' || c == '^'){
+                if((c=='+' || c=='-' || c=='*' || c=='/' || c =='(' || c == ')' || c == '^') && (counterOperator<1)){
+                    counterOperator++;
                     String s = Character.toString(c);
                     infixQ.offer(s);
                 }
