@@ -36,8 +36,22 @@ class ReversePolishNotationCalculator{
         //     }
         // }
         //infixQ.add("e");
+
+        
+
+
         while(true){
-            r.takeInputs(infixQ, opStack, postFixQ, evalStack);
+            try {
+                r.takeInputs(infixQ, opStack, postFixQ, evalStack);
+                
+            } catch (Exception e) {
+                System.out.println("Invalid Mathematical Expression E");
+                while(!infixQ.isEmpty()){
+                    infixQ.remove();
+                }
+                
+            }
+            
         }
 
         
@@ -48,6 +62,8 @@ class ReversePolishNotationCalculator{
 
     public void takeInputs(Queue<String> infixQ, Stack<Character> opStack, Queue<String> postFixQ,Stack<Double> evalStack){
         Scanner sc = new Scanner(System.in);
+        Stack<Character> braceOpen = new Stack<Character>();
+        Stack<Character> braceClose = new Stack<Character>();
         String temp = "";
         System.out.print("Enter the expression: ");
         String[] infixExpArr = sc.nextLine().split(" ");
@@ -72,19 +88,27 @@ class ReversePolishNotationCalculator{
             char c = infixExp.charAt(i);
             
             if((i==0 && c == '-') || (i > 0 && c == '-' && infixExp.charAt(i-1) == '(') || (i!=0 && i<infixExp.length()-1 && c == '-' && !Character.isDigit(infixExp.charAt(i+1)) && !Character.isDigit(infixExp.charAt(i-1)))){
-                System.out.println("Invalid Mathematical Expression");
+                System.out.println("Invalid Mathematical Expression 1");
+                while(!infixQ.isEmpty()){
+                    infixQ.remove();
+                }
                 while(true){
                     takeInputs(infixQ, opStack, postFixQ, evalStack);
                 }
                 //System.exit(0);
             }
-            else if(Character.isDigit(c) || c == '.'){//infixExp.charAt(i) != '+' || infixExp.charAt(i) != '-' || infixExp.charAt(i) != '*' || infixExp.charAt(i) != '/' || infixExp.charAt(i) != '(' || infixExp.charAt(i) != ')'){
-                    //char cc = infixExp.charAt(i);
-                // if(infixExp.charAt(i+1) == "." && Character.isDigit(infixExp.charAt(i+2))){
+            if(!Character.isDigit(infixExp.charAt(infixExp.length()-1)) && infixExp.charAt(infixExp.length()-1) != ')'){
+                System.out.println("Invalid Mathematical Expression 1");
+                while(!infixQ.isEmpty()){
+                    infixQ.remove();
+                }
+                while(true){
+                    takeInputs(infixQ, opStack, postFixQ, evalStack);
+                }
+            }
 
-                // }
-                // else{ 
-                //}
+
+            if(Character.isDigit(c) || c == '.'){
                 if(c == '.'){
                     decimalCounter++;
                 }
@@ -93,7 +117,10 @@ class ReversePolishNotationCalculator{
                     temp +=c;
                 }
                 else if(decimalCounter>1 && c =='.'){
-                    System.out.println("Invalid Mathematical Expression");
+                    System.out.println("Invalid Mathematical Expression 2");
+                    while(!infixQ.isEmpty()){
+                        infixQ.remove();
+                    }
                     while(true){
                         takeInputs(infixQ, opStack, postFixQ, evalStack);
                     }
@@ -120,8 +147,25 @@ class ReversePolishNotationCalculator{
                     temp = "";
                 }
                 //System.out.print("hi");
-                if((c=='+' || c=='-' || c=='*' || c=='/' || c =='(' || c == ')' || c == '^') && (counterOperator<1)){
+                if((c=='+' || c=='-' || c=='*' || c=='/' || c == '^') && (counterOperator<1))
+                {
                     counterOperator++;
+                    String s = Character.toString(c);
+                    infixQ.offer(s);
+                }
+                else if( c =='(' || c == ')' ){
+                    
+                    if(c == '('){
+                        braceOpen.push(c);
+                        String s = Character.toString(c);
+                        infixQ.offer(s);    
+                    }
+                    if(c ==')'){
+                        braceClose.push(c);
+                        String s = Character.toString(c);
+                        infixQ.offer(s); 
+                    }
+
                     String s = Character.toString(c);
                     infixQ.offer(s);
                 }
@@ -130,30 +174,59 @@ class ReversePolishNotationCalculator{
                         if(infixExp.charAt(i+2) == 'w' || infixExp.charAt(i+2) == 'W'){
                             infixQ.offer("^");
                             i = i+2;
+                            counterOperator++;
                         }
                         else{
-                            System.out.println("Invalid Mathematical Expression");
+                            System.out.println("Invalid Mathematical Expression 3");
+                            while(!infixQ.isEmpty()){
+                                infixQ.remove();
+                            }
                             while(true){
                                 takeInputs(infixQ, opStack, postFixQ, evalStack);
                             }
                         }
                     }
                     else{
-                        System.out.println("Invalid Mathematical Expression");
+                        System.out.println("Invalid Mathematical Expression 4");
+                        while(!infixQ.isEmpty()){
+                            infixQ.remove();
+                        }
                         while(true){
                             takeInputs(infixQ, opStack, postFixQ, evalStack);
                         }
                     }
                 }
                 else{
-                    System.out.println("Invalid Mathematical Expression");
+                    System.out.println("Invalid Mathematical Expression 5");
+                    while(!infixQ.isEmpty()){
+                        infixQ.remove();
+                    }
                     while(true){
                         takeInputs(infixQ, opStack, postFixQ, evalStack);
                     }
                 }
             }
         }
-    
+        int braceCounterOpen =0;
+        int braceCounterClose =0;
+        while(!braceOpen.isEmpty()){
+            braceOpen.pop();
+            braceCounterOpen ++;
+        }
+        while(!braceClose.isEmpty()){
+            braceClose.pop();
+            braceCounterClose ++;
+        }
+
+        if(braceCounterOpen != braceCounterClose){
+            System.out.println("Invalid Mathematical Expression 5");
+                    while(!infixQ.isEmpty()){
+                        infixQ.remove();
+                    }
+                    while(true){
+                        takeInputs(infixQ, opStack, postFixQ, evalStack);
+                    }
+        }
     
         //System.out.println(infixQ);
         String outInfix ="";
