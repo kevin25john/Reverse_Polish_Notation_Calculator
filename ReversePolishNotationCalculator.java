@@ -15,37 +15,14 @@ class ReversePolishNotationCalculator{
         Stack<Character> opStack = new Stack<Character>();
         Queue<String> postFixQ = new LinkedList<String>();
         Stack<Double> evalStack = new Stack<Double>();
-        //Stack<Character> stack = new Stack<>();
         ReversePolishNotationCalculator r = new ReversePolishNotationCalculator();
-        
-        
-        
-
-        // for (char c : infixExp.toCharArray()) {
-        //     //char temp = '\0';
-        //     String tmp = Character.toString(c);
-        //     String temp ="";
-            
-        //     if(tmp !="+" || tmp!= "-" || tmp!="*" || tmp!="/" || tmp!="(" || tmp != ")" || tmp!="^"){
-        //         temp += tmp;
-        //     }
-        //     else{
-        //         infixQ.offer(temp);
-        //         infixQ.offer(tmp);
-        //         temp = "";
-        //     }
-        // }
-        //infixQ.add("e");
-
-        
-
 
         while(true){
             try {
                 r.takeInputs(infixQ, opStack, postFixQ, evalStack);
                 
             } catch (Exception e) {
-                System.out.println("Invalid Mathematical Expression E");
+                System.out.println("Invalid Mathematical Expression");
                 while(!infixQ.isEmpty()){
                     infixQ.remove();
                 }
@@ -53,10 +30,6 @@ class ReversePolishNotationCalculator{
             }
             
         }
-
-        
-        //scan.close();
-        //System.exit(0);
 
     }
 
@@ -65,7 +38,7 @@ class ReversePolishNotationCalculator{
         Stack<Character> braceOpen = new Stack<Character>();
         Stack<Character> braceClose = new Stack<Character>();
         String temp = "";
-        System.out.print("Enter the expression: ");
+        System.out.print("Enter the expression or 'quit' to quit: ");
         String[] infixExpArr = sc.nextLine().split(" ");
         String infixExp ="";
         int decimalCounter=0;
@@ -74,31 +47,22 @@ class ReversePolishNotationCalculator{
             infixExp +=infixExpArr[x];
         }
         if(infixExp.equals("quit")){
-                //scan.next();
                 System.exit(0);
         }
-
-            //System.out.print("Enter the expression: ");
-            //String infixExp = sc.nextLine();
-            //r.takeInputs(infixQ, opStack, postFixQ, evalStack);
-        //Scanner scan = new Scanner(System.in);
-        //String infixExp = scan.nextLine();
-
         for(int i = 0; i<infixExp.length();i++){
             char c = infixExp.charAt(i);
             
             if((i==0 && c == '-') || (i > 0 && c == '-' && infixExp.charAt(i-1) == '(') || (i!=0 && i<infixExp.length()-1 && c == '-' && !Character.isDigit(infixExp.charAt(i+1)) && !Character.isDigit(infixExp.charAt(i-1)))){
-                System.out.println("Invalid Mathematical Expression 1");
+                System.out.println("Invalid Mathematical Expression");
                 while(!infixQ.isEmpty()){
                     infixQ.remove();
                 }
                 while(true){
                     takeInputs(infixQ, opStack, postFixQ, evalStack);
                 }
-                //System.exit(0);
             }
             if(!Character.isDigit(infixExp.charAt(infixExp.length()-1)) && infixExp.charAt(infixExp.length()-1) != ')'){
-                System.out.println("Invalid Mathematical Expression 1");
+                System.out.println("Invalid Mathematical Expression");
                 while(!infixQ.isEmpty()){
                     infixQ.remove();
                 }
@@ -106,7 +70,6 @@ class ReversePolishNotationCalculator{
                     takeInputs(infixQ, opStack, postFixQ, evalStack);
                 }
             }
-
 
             if(Character.isDigit(c) || c == '.'){
                 if(c == '.'){
@@ -117,7 +80,7 @@ class ReversePolishNotationCalculator{
                     temp +=c;
                 }
                 else if(decimalCounter>1 && c =='.'){
-                    System.out.println("Invalid Mathematical Expression 2");
+                    System.out.println("Invalid Mathematical Expression");
                     while(!infixQ.isEmpty()){
                         infixQ.remove();
                     }
@@ -140,13 +103,11 @@ class ReversePolishNotationCalculator{
             }
             else{
                 
-                //String tmp = Character.toString(temp);
                 if(!temp.equals("")){
                     infixQ.offer(temp);
                     decimalCounter=0;
                     temp = "";
                 }
-                //System.out.print("hi");
                 if((c=='+' || c=='-' || c=='*' || c=='/' || c == '^') && (counterOperator<1))
                 {
                     counterOperator++;
@@ -169,7 +130,7 @@ class ReversePolishNotationCalculator{
                     String s = Character.toString(c);
                     infixQ.offer(s);
                 }
-                else if(i>0 && (c =='p' || c == 'P') && Character.isDigit(infixExp.charAt(i-1))){
+                else if(i>0 && (c =='p' || c == 'P') && (Character.isDigit(infixExp.charAt(i-1)) || infixExp.charAt(i-1) == ')')){
                     if(infixExp.charAt(i+1) == 'o' || infixExp.charAt(i+1) == 'O'){
                         if(infixExp.charAt(i+2) == 'w' || infixExp.charAt(i+2) == 'W'){
                             infixQ.offer("^");
@@ -177,7 +138,7 @@ class ReversePolishNotationCalculator{
                             counterOperator++;
                         }
                         else{
-                            System.out.println("Invalid Mathematical Expression 3");
+                            System.out.println("Invalid Mathematical Expression");
                             while(!infixQ.isEmpty()){
                                 infixQ.remove();
                             }
@@ -187,7 +148,7 @@ class ReversePolishNotationCalculator{
                         }
                     }
                     else{
-                        System.out.println("Invalid Mathematical Expression 4");
+                        System.out.println("Invalid Mathematical Expression");
                         while(!infixQ.isEmpty()){
                             infixQ.remove();
                         }
@@ -197,7 +158,7 @@ class ReversePolishNotationCalculator{
                     }
                 }
                 else{
-                    System.out.println("Invalid Mathematical Expression 5");
+                    System.out.println("Invalid Mathematical Expression");
                     while(!infixQ.isEmpty()){
                         infixQ.remove();
                     }
@@ -219,7 +180,7 @@ class ReversePolishNotationCalculator{
         }
 
         if(braceCounterOpen != braceCounterClose){
-            System.out.println("Invalid Mathematical Expression 5");
+            System.out.println("Invalid Mathematical Expression");
                     while(!infixQ.isEmpty()){
                         infixQ.remove();
                     }
@@ -227,8 +188,6 @@ class ReversePolishNotationCalculator{
                         takeInputs(infixQ, opStack, postFixQ, evalStack);
                     }
         }
-    
-        //System.out.println(infixQ);
         String outInfix ="";
         for(int infix =0; infix<infixQ.size();infix++){
             String teeemp = infixQ.peek();
@@ -249,8 +208,6 @@ class ReversePolishNotationCalculator{
             postFixQ.offer(teeemp2);
         }
         System.out.println("The PostFix Expression: " + outPostfixValue);
-
-        //System.out.println(postFixQ);
         calculate(postFixQ, evalStack);
         double value = evalStack.peek();
         System.out.printf("The result is: %.2f \n", value); //https://stackoverflow.com/questions/2808535/round-a-double-to-2-decimal-places
@@ -283,7 +240,6 @@ class ReversePolishNotationCalculator{
             } catch (NumberFormatException e) {
                 numeric = false;
             }
-            //int tempNum = Integer.parseInt(t);
             Boolean DoubleNumber = true;
             try {
                 Double fl = Double.parseDouble(t);
@@ -293,13 +249,13 @@ class ReversePolishNotationCalculator{
 
             if(numeric){
                 postFixQ.offer(t);
-                //System.out.print(t);
+                
             }
             else if(DoubleNumber){
                 postFixQ.offer(t);
             }
             else if(opsStack.isEmpty()){
-                //char op = t.;
+                
                 opsStack.push(t.charAt(0));
             }
             else if(t.charAt(0) == '('){
@@ -359,8 +315,6 @@ class ReversePolishNotationCalculator{
                 evalStack.push(answer);
 
             }
-
-
 
         }
     }
